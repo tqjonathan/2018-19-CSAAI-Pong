@@ -8,7 +8,7 @@ function raqueta(posx,posy){
     //-- Coordenadas
   this.x =  0;
   this.y = 0;
-  //-- Velocidad
+  //-- Velocidad movimiento
   this.vx = 0;
   this.vy = 0;
   //-- Contexto
@@ -177,7 +177,7 @@ function main()
             ctx.fillRect(300, i, 1, 10)
             i += 20;
           }
-
+            //Si sobrepasa el campo por la derecha, anotar punto
           if (bola.x > canvas.width) {
             //Actualiza contador (sube puntos a j1)
             marcador.update1();
@@ -185,7 +185,7 @@ function main()
             bola.reset();
             //-- Dibujar la bola en pos. inicial
             bola.draw();
-          }if (bola.x < 0) {
+          }if (bola.x < 0) { //Si sobrepasa el campo por la izquierda
             //Actualiza contador (sube puntos a j2)
             marcador.update2();
             //-- Bola a su posicion inicial
@@ -193,25 +193,61 @@ function main()
             //-- Dibujar la bola en pos. inicial
             bola.draw();
           };
+          //Si sobrepasa el campo por arriba o abajo, rebotar
+          if (bola.y > canvas.height || bola.y < 0) {
+            bola.vy = -bola.vy
+          };
 
+          //Rebotar sobre las raquetas
+          if (bola.x < (player1.x + player1.width) && bola.y < (player1.y + player1.height) && bola.y > player1.y) {
+            bola.vx = -bola.vx
+          }
+          if (bola.x > player2.x && bola.y < (player2.y + player2.height) && bola.y > player2.y) {
+            bola.vx = -bola.vx
+          }
 
-          //-- Si la bola llega a la parte derecha del canvas:
-          //-- Terminar
-          if (bola.x > canvas.width) {
+          //movimiento de las raquetas
+          window.onkeydown = (e) => {
+            e.preventDefault(); //obvia la funcion de la tecla
+            switch (e.key) {
+              case 'w':
+                player1.vy = -5;
+                break;
+              case 's':
+                player1.vy = 5;
+                break;
+              case 'ArrowUp':
+                player2.vy = -5;
+                break;
+              case 'ArrowDown':
+                player2.vy = 5;
+                break;
+              default:
+                break;
+            }
+          }
 
-            //-- Eliminar el timer
-            clearInterval(timer)
-            timer = null;
-
-            //-- Bola a su posicion inicial
-            bola.reset();
-
-            //-- Dibujar la bola en pos. inicial
-            bola.draw();
+          //detiene la raqutea
+          window.onkeyup = (e) => {
+            switch (e.key) {
+              case 'w':
+                player1.vy = 0;
+                break;
+              case 's':
+                player1.vy = 0;
+                break;
+              case 'ArrowUp':
+                player2.vy = 0;
+                break;
+              case 'ArrowDown':
+                player2.vy = 0;
+                break;
+              default:
+                break;
+            }
           }
         },20); //-- timer
       }
     } //-- Fin onclick
-
 
 }
